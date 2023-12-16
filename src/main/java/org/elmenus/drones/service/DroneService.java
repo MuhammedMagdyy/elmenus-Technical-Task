@@ -9,7 +9,10 @@ import org.elmenus.drones.model.entity.Drone;
 import org.elmenus.drones.model.entity.DroneState;
 import org.elmenus.drones.model.entity.Medication;
 import org.elmenus.drones.repository.DroneRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class DroneService {
     private final DroneRepository droneRepository;
+    private static final Logger logger = LoggerFactory.getLogger(DroneService.class);
 
     @Autowired
     public DroneService(DroneRepository droneRepository) {
@@ -125,5 +129,16 @@ public class DroneService {
                 .orElseThrow(() -> new NotFoundException("Drone not found"));
 
         return drone.getBatteryCapacity();
+    }
+
+    @Scheduled(cron = "0 0/30 * * * ?") // Logs every 30 minutes
+    public void logBatteryLevel() {
+        List<Drone> drones = droneRepository.findAll();
+
+        for (Drone drone : drones) {
+            int batteryLevel = getBatteryLevel(drone.getId());
+
+            logger.info("Battery level for drone " + drone.getId() + " : " + batteryLevel);
+        }
     }
 }
