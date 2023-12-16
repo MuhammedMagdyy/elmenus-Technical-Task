@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.elmenus.drones.helpers.NotFoundException;
 import org.elmenus.drones.model.dto.DroneDTO;
 import org.elmenus.drones.model.entity.Drone;
+import org.elmenus.drones.model.entity.DroneState;
 import org.elmenus.drones.repository.DroneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,5 +58,14 @@ public class DroneService {
         }
 
         droneRepository.deleteById(id);
+    }
+
+    private void changeState(long droneId, DroneState state) {
+        Drone drone = droneRepository.findById(droneId)
+                .orElseThrow(
+                        () -> new NotFoundException("Drone not found")
+                );
+        drone.setState(state);
+        droneRepository.save(drone);
     }
 }
