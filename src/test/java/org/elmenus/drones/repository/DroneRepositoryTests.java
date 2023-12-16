@@ -38,10 +38,10 @@ public class DroneRepositoryTests {
 
     @Test
     void getFoundDroneTest() {
-        Optional<Drone> drone = droneRepository.findById(21L);
+        Optional<Drone> drone = droneRepository.findById(1L);
 
         Assertions.assertTrue(drone.isPresent());
-        Assertions.assertEquals(21L, drone.get().getId());
+        Assertions.assertEquals(1L, drone.get().getId());
     }
 
     @Test
