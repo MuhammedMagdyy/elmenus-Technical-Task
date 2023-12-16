@@ -111,4 +111,12 @@ public class DroneService {
             throw e;
         }
     }
+
+    public List<DroneDTO> availableToLoad() {
+        List<Drone> availableDrones = droneRepository.findByState(DroneState.IDLE);
+
+        return availableDrones.stream()
+                .map(DroneDTO::toDto)
+                .collect(Collectors.toList());
+    }
 }
