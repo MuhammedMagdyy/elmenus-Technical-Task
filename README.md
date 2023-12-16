@@ -34,7 +34,7 @@ Useful drone functions include the delivery of small items that are (urgently) n
 
 ## Schema
 
-![schema](https://github.com/MuhammedMagdyy/API-Documentation/assets/60513866/70abd25a-151c-42d0-8aac-8e4c1a2a0f90)
+![Schema](https://github.com/MuhammedMagdyy/elmenus-technical-task/assets/60513866/b2821778-7015-48c1-8c7d-d5f693196bb9)
 
 ## API Documentation
 ### Postman
