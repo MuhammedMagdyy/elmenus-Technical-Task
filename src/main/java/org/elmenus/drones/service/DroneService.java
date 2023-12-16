@@ -1,10 +1,13 @@
 package org.elmenus.drones.service;
 
 import jakarta.validation.Valid;
+import org.elmenus.drones.helpers.BadRequestException;
 import org.elmenus.drones.helpers.NotFoundException;
 import org.elmenus.drones.model.dto.DroneDTO;
+import org.elmenus.drones.model.dto.MedicationDTO;
 import org.elmenus.drones.model.entity.Drone;
 import org.elmenus.drones.model.entity.DroneState;
+import org.elmenus.drones.model.entity.Medication;
 import org.elmenus.drones.repository.DroneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,5 +70,45 @@ public class DroneService {
                 );
         drone.setState(state);
         droneRepository.save(drone);
+    }
+
+    public void loadMedications(Long droneId, List<MedicationDTO> medications) {
+        Drone drone = droneRepository.findById(droneId)
+                .orElseThrow(
+                        () -> new NotFoundException("Drone not found")
+                );
+
+        if (drone.getState() != DroneState.IDLE) {
+            throw new BadRequestException("Drone must be in IDLE state to load");
+        }
+
+        try {
+            double totalWeight = medications.stream()
+                    .mapToDouble(MedicationDTO::getWeight).sum();
+
+
+            if (drone.getBatteryCapacity() < 25) {
+                throw new BadRequestException("Low battery level - less than 25%");
+            }
+
+            if (totalWeight > drone.getWeightLimit()) {
+                throw new BadRequestException("Total weight limit exceeded");
+            }
+
+            changeState(droneId, DroneState.LOADING);
+
+            List<Medication> medicationEntities = Medication.toListEntity(medications);
+            for (Medication medication : medicationEntities) {
+                medication.setDrone(drone);
+            }
+            drone.setMedications(medicationEntities);
+            drone.setState(DroneState.LOADED);
+
+            droneRepository.save(drone);
+        } catch (BadRequestException e) {
+            drone.setState(DroneState.IDLE);
+            droneRepository.save(drone);
+            throw e;
+        }
     }
 }
