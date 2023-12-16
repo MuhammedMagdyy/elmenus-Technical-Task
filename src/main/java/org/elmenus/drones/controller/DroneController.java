@@ -75,4 +75,29 @@ public class DroneController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/load/{droneId}")
+    public ResponseEntity<ApiResponse<Void>> loadMedications(@PathVariable("droneId") Long droneId,
+                                                             @RequestBody List<MedicationDTO> medications) {
+        droneService.loadMedications(droneId, medications);
+        ApiResponse<Void> response = new ApiResponse<>("Medications loaded successfully", null);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/available-to-load")
+    public ResponseEntity<ApiResponse<List<DroneDTO>>> availableToLoad() {
+        List<DroneDTO> availableDrones = droneService.availableToLoad();
+        ApiResponse<List<DroneDTO>> response = new ApiResponse<>("Drones fetched successfully", availableDrones);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/battery-level/{droneId}")
+    public ResponseEntity<ApiResponse<Integer>> getBatteryLevel(@PathVariable("droneId") Long droneId) {
+        int batteryLevel = droneService.getBatteryLevel(droneId);
+        ApiResponse<Integer> response = new ApiResponse<>("Battery level fetched successfully", batteryLevel);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
