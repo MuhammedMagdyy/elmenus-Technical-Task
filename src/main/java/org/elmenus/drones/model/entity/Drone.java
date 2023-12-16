@@ -2,6 +2,7 @@ package org.elmenus.drones.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.elmenus.drones.model.dto.DroneDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,5 +43,16 @@ public class Drone {
         this.weightLimit = weightLimit;
         this.batteryCapacity = batteryCapacity;
         this.state = state;
+    }
+
+    public static Drone toEntity(DroneDTO droneDTO) {
+        return Drone.builder()
+                .id(droneDTO.getId())
+                .serialNumber(droneDTO.getSerialNumber())
+                .model(droneDTO.getModel())
+                .weightLimit(droneDTO.getWeightLimit())
+                .batteryCapacity(droneDTO.getBatteryCapacity())
+                .state(droneDTO.getState())
+                .build();
     }
 }

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.elmenus.drones.model.entity.Drone;
 import org.elmenus.drones.model.entity.DroneModel;
 import org.elmenus.drones.model.entity.DroneState;
 
@@ -33,4 +34,16 @@ public class DroneDTO {
     @NotNull
     private DroneState state;
     private List<MedicationDTO> medications = new ArrayList<>();
+
+    public static DroneDTO toDto(Drone drone) {
+        return DroneDTO.builder()
+                .id(drone.getId())
+                .serialNumber(drone.getSerialNumber())
+                .model(drone.getModel())
+                .weightLimit(drone.getWeightLimit())
+                .batteryCapacity(drone.getBatteryCapacity())
+                .state(drone.getState())
+                .medications(MedicationDTO.toDtoList(drone.getMedications()))
+                .build();
+    }
 }
