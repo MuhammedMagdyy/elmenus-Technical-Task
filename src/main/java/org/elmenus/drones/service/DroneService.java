@@ -119,4 +119,11 @@ public class DroneService {
                 .map(DroneDTO::toDto)
                 .collect(Collectors.toList());
     }
+
+    public int getBatteryLevel(Long id) {
+        Drone drone = droneRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Drone not found"));
+
+        return drone.getBatteryCapacity();
+    }
 }
